@@ -2,118 +2,115 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
+/* 
+  RescueSync Design System
+  Premium Emergency Command Center Theme
 */
 
 @layer base {
   :root {
-    /* Indian Tricolor Theme - Light Mode */
-    --background: 0 0% 100%;
-    --foreground: 240 60% 10%;
+    /* Light Mode - Crisp, professional clean look */
+    --background: 210 40% 98%;
+    --foreground: 222 47% 11%;
 
     --card: 0 0% 100%;
-    --card-foreground: 240 60% 10%;
+    --card-foreground: 222 47% 11%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 240 60% 10%;
+    --popover-foreground: 222 47% 11%;
 
-    /* Saffron - Primary (Authority & Energy) */
-    --primary: 30 100% 60%;
+    /* Primary: Amber/Orange (Alert/Action) */
+    --primary: 38 92% 50%;
     --primary-foreground: 0 0% 100%;
     
-    /* Navy Blue - Secondary (Trust & Stability) */
-    --secondary: 240 100% 25%;
-    --secondary-foreground: 0 0% 100%;
+    /* Secondary: Deep Slate (Professional/Stable) */
+    --secondary: 215 25% 27%;
+    --secondary-foreground: 210 40% 98%;
 
-    /* Green - Success (Growth & Hope) */
-    --success: 142 76% 36%;
+    /* Success: Teal/Cyan (Modern Growth) */
+    --success: 173 80% 35%;
     --success-foreground: 0 0% 100%;
 
     --muted: 210 40% 96.1%;
-    --muted-foreground: 240 10% 46%;
+    --muted-foreground: 215 16% 47%;
 
-    --accent: 30 100% 60%;
+    --accent: 38 92% 50%;
     --accent-foreground: 0 0% 100%;
 
-    --destructive: 0 84.2% 60.2%;
+    --destructive: 348 83% 47%;
     --destructive-foreground: 0 0% 100%;
 
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
-    --ring: 30 100% 60%;
+    --ring: 38 92% 50%;
 
-    --radius: 0.75rem;
+    --radius: 0.5rem;
 
-    /* Indian Gradients */
-    --gradient-tricolor: linear-gradient(135deg, hsl(30 100% 60%) 0%, hsl(0 0% 100%) 50%, hsl(142 76% 36%) 100%);
-    --gradient-saffron: linear-gradient(135deg, hsl(30 100% 60%) 0%, hsl(25 100% 55%) 100%);
-    --gradient-navy: linear-gradient(135deg, hsl(240 100% 25%) 0%, hsl(235 100% 30%) 100%);
+    /* Modern Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(38 92% 50%) 0%, hsl(25 95% 53%) 100%);
+    --gradient-secondary: linear-gradient(135deg, hsl(215 25% 27%) 0%, hsl(222 47% 11%) 100%);
     
-    /* Shadows with Indian colors */
-    --shadow-saffron: 0 10px 30px -10px hsl(30 100% 60% / 0.3);
-    --shadow-navy: 0 10px 30px -10px hsl(240 100% 25% / 0.3);
-    --shadow-green: 0 10px 30px -10px hsl(142 76% 36% / 0.3);
+    /* Elevated Shadows */
+    --shadow-glow: 0 10px 30px -10px hsl(38 92% 50% / 0.3);
 
-    --sidebar-background: 0 0% 98%;
-    --sidebar-foreground: 240 60% 10%;
-    --sidebar-primary: 30 100% 60%;
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 222 47% 11%;
+    --sidebar-primary: 38 92% 50%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 4.8% 95.9%;
-    --sidebar-accent-foreground: 240 60% 10%;
-    --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 30 100% 60%;
+    --sidebar-accent: 210 40% 96.1%;
+    --sidebar-accent-foreground: 222 47% 11%;
+    --sidebar-border: 214.3 31.8% 91.4%;
+    --sidebar-ring: 38 92% 50%;
   }
 
   .dark {
-    /* Indian Tricolor Theme - Dark Mode */
-    --background: 240 60% 5%;
-    --foreground: 0 0% 98%;
+    /* Dark Mode - Obsidian Command Center */
+    --background: 222 47% 7%;
+    --foreground: 210 40% 98%;
 
-    --card: 240 50% 8%;
-    --card-foreground: 0 0% 98%;
+    --card: 222 47% 9%;
+    --card-foreground: 210 40% 98%;
 
-    --popover: 240 50% 8%;
-    --popover-foreground: 0 0% 98%;
+    --popover: 222 47% 9%;
+    --popover-foreground: 210 40% 98%;
 
-    /* Saffron - Adjusted for dark mode */
-    --primary: 30 100% 55%;
-    --primary-foreground: 240 60% 5%;
+    /* Primary: Amber/Orange */
+    --primary: 38 92% 50%;
+    --primary-foreground: 222 47% 7%;
     
-    /* Navy Blue - Lighter in dark mode */
-    --secondary: 240 100% 40%;
-    --secondary-foreground: 0 0% 100%;
+    /* Secondary: Muted Slate */
+    --secondary: 217 33% 17%;
+    --secondary-foreground: 210 40% 98%;
 
-    /* Green - Adjusted for dark mode */
-    --success: 142 76% 45%;
-    --success-foreground: 240 60% 5%;
+    /* Success: Teal/Cyan */
+    --success: 173 80% 45%;
+    --success-foreground: 222 47% 7%;
 
-    --muted: 240 40% 12%;
-    --muted-foreground: 240 5% 65%;
+    --muted: 217 33% 17%;
+    --muted-foreground: 215 20% 65%;
 
-    --accent: 30 100% 55%;
-    --accent-foreground: 240 60% 5%;
+    --accent: 38 92% 50%;
+    --accent-foreground: 222 47% 7%;
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 98%;
+    --destructive: 348 83% 55%;
+    --destructive-foreground: 210 40% 98%;
 
-    --border: 240 40% 15%;
-    --input: 240 40% 15%;
-    --ring: 30 100% 55%;
+    --border: 217 33% 17%;
+    --input: 217 33% 17%;
+    --ring: 38 92% 50%;
 
-    /* Dark mode gradients */
-    --gradient-tricolor: linear-gradient(135deg, hsl(30 100% 55%) 0%, hsl(240 50% 15%) 50%, hsl(142 76% 45%) 100%);
-    --gradient-saffron: linear-gradient(135deg, hsl(30 100% 55%) 0%, hsl(25 100% 50%) 100%);
-    --gradient-navy: linear-gradient(135deg, hsl(240 100% 40%) 0%, hsl(235 100% 45%) 100%);
+    /* Modern Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(38 92% 55%) 0%, hsl(25 95% 60%) 100%);
+    --gradient-secondary: linear-gradient(135deg, hsl(217 33% 17%) 0%, hsl(222 47% 11%) 100%);
 
-    --sidebar-background: 240 60% 8%;
-    --sidebar-foreground: 0 0% 98%;
-    --sidebar-primary: 30 100% 55%;
-    --sidebar-primary-foreground: 240 60% 5%;
-    --sidebar-accent: 240 40% 12%;
-    --sidebar-accent-foreground: 0 0% 98%;
-    --sidebar-border: 240 40% 15%;
-    --sidebar-ring: 30 100% 55%;
+    --sidebar-background: 222 47% 9%;
+    --sidebar-foreground: 210 40% 98%;
+    --sidebar-primary: 38 92% 50%;
+    --sidebar-primary-foreground: 222 47% 7%;
+    --sidebar-accent: 217 33% 17%;
+    --sidebar-accent-foreground: 210 40% 98%;
+    --sidebar-border: 217 33% 17%;
+    --sidebar-ring: 38 92% 50%;
   }
 }
 
@@ -123,6 +120,7 @@ All colors MUST be HSL.
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground antialiased;
+    font-feature-settings: "rlig" 1, "calt" 1;
   }
 }

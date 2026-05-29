@@ -63,8 +63,8 @@ export default {
         },
       },
       fontFamily: {
-        sans: ['Noto Sans', 'system-ui', 'sans-serif'],
-        devanagari: ['Noto Sans Devanagari', 'system-ui', 'sans-serif'],
+        sans: ['Inter', 'system-ui', 'sans-serif'],
+        devanagari: ['Inter', 'system-ui', 'sans-serif'],
       },
       borderRadius: {
         lg: "var(--radius)",

@@ -1,35 +1,24 @@
-# 🚨 RescueSync: Disaster Management Training
+# 🚨 RescueSync: Advanced Disaster Management Platform
 
-[![Build Status](https://img.shields.io/badge/build-passing-brightgreen)](https://github.com/bhanukumardev/SIH-SurakshaSaathi-DisasterMgmt-Training)
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![React](https://img.shields.io/badge/React-20232A?logo=react&logoColor=61DAFB)](https://reactjs.org/)
 [![Supabase](https://img.shields.io/badge/Supabase-3ECF8E?logo=supabase&logoColor=white)](https://supabase.com/)
-[![Stars](https://img.shields.io/github/stars/bhanukumardev/SIH-SurakshaSaathi-DisasterMgmt-Training?style=social)](https://github.com/bhanukumardev/SIH-SurakshaSaathi-DisasterMgmt-Training/stargazers)
-[![Forks](https://img.shields.io/github/forks/bhanukumardev/SIH-SurakshaSaathi-DisasterMgmt-Training?style=social)](https://github.com/bhanukumardev/SIH-SurakshaSaathi-DisasterMgmt-Training/forks)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-> Real-Time Monitoring System for Disaster Management Trainings — An advanced full-stack platform with AI/ML integration for scheduling, tracking, analytics, real-time alerts, and gamified drills.
-
-## 🚀 Live Demo
-
-🔗 [Check out our LinkedIn post](https://www.linkedin.com/posts/bhanu-kumar-dev-97b820313_sih2025-smartindiahackathon-sih-activity-7392459131451830272-aEJ2?utm_source=share&utm_medium=member_desktop&rcm=ACoAAE-td28BKSK7mi1hQgrYDtXPTq_qe8XRr18) for more details about the project.
-
-- 🌐 Check out our live platform: [suraksha-saathi.vercel.app](https://suraksha-saathi.vercel.app) ✅
-- - 🎬 Demo video: [https://lnkd.in/evpX3WGR](https://lnkd.in/evpX3WGR) ✅
+> **Real-Time Monitoring System for Disaster Management Trainings** — An advanced full-stack platform with AI/ML integration for scheduling, tracking, analytics, real-time alerts, and gamified drills.
 
 ## 📌 Overview
 
-RescueSync is India's premier real-time disaster management training monitoring platform designed to revolutionize how government agencies, NGOs, and communities prepare for emergencies. Built for Smart India Hackathon (SIH) 2025, this comprehensive system bridges the gap between disaster management training and measurable outcomes through real-time coordination, analytics, and performance tracking.
+RescueSync is a premium, real-time disaster management training and monitoring platform designed to revolutionize how government agencies, NGOs, and communities prepare for emergencies. This comprehensive system bridges the gap between disaster management training and measurable outcomes through real-time coordination, analytics, and performance tracking.
 
 **Core Capabilities:**
 
 - **Real-time Monitoring & Coordination** - Track all disaster management trainings nationwide with live updates and activity logs
-- **Comprehensive Analytics & Insights** - Training impact scoring (8.7/10), geographic coverage tracking (28/29 states), and knowledge retention metrics (92%)
-- **Geographic Coverage Tracking** - Regional performance analysis (North, South, East, West) with state-wise comparisons
+- **Comprehensive Analytics & Insights** - Training impact scoring, geographic coverage tracking, and knowledge retention metrics
+- **Geographic Coverage Tracking** - Regional performance analysis with state-wise comparisons
 - **Training Program Management** - Create, schedule, and track training programs across disaster management categories (Capacity Building, Response, Recovery, Preparedness)
 - **Live Dashboards & Reporting** - Real-time KPIs including active trainings, participants, completion rates, and monthly trends
 - **Role-Based Access Control** - Multi-user system supporting Admin, Trainer, State Coordinator, and Data Entry roles
-
 
 ## ✨ Key Features
 
@@ -68,7 +57,7 @@ RescueSync is India's premier real-time disaster management training monitoring 
 ### Frontend
 - **Framework:** React 18 + TypeScript
 - **Build Tool:** Vite
-- **Styling:** Tailwind CSS, Radix UI
+- **Styling:** Tailwind CSS, Radix UI (shadcn/ui)
 - **State Management:** React Query (TanStack Query)
 - **Charts:** Recharts
 - **Routing:** React Router v6
@@ -85,12 +74,6 @@ RescueSync is India's premier real-time disaster management training monitoring 
 - **Storage:** Supabase Storage
 - **Analytics:** Custom aggregation pipelines
 
-### Deployment
-- **Frontend:** Vercel / Render
-- **Backend:** Render (auto-scaling)
-- **Database:** Supabase Cloud
-- **CI/CD:** GitHub Actions
-
 ## 📦 Installation & Setup
 
 ### Prerequisites
@@ -102,8 +85,8 @@ RescueSync is India's premier real-time disaster management training monitoring 
 ### Clone Repository
 
 ```bash
-git clone https://github.com/bhanukumardev/SIH-SurakshaSaathi-DisasterMgmt-Training.git
-cd SIH-SurakshaSaathi-DisasterMgmt-Training
+git clone <your-repository-url>
+cd rescuesync
 ```
 
 ### Frontend Setup
@@ -199,96 +182,12 @@ supabase
 5. **Supabase Database** → Secure data storage and retrieval
 6. **Analytics Pipeline** → Server-side aggregations and reporting
 
-## 🚀 Deployment
-
-### Frontend (Vercel)
-
-```bash
-# Install Vercel CLI
-npm i -g vercel
-
-# Deploy
-cd frontend
-vercel
-```
-
-### Backend (Render)
-
-1. Create new Web Service on Render
-2. Connect GitHub repository
-3. Set build command: `npm install && npm run build`
-4. Set start command: `npm start`
-5. Add environment variables
-6. Deploy
-
-### Supabase Setup
-
-1. Create new project on Supabase
-2. Run database migrations from `/supabase/migrations`
-3. Set up Row Level Security (RLS) policies
-4. Configure authentication providers
-5. Copy project URL and keys
-
-## 🤝 Contributing
-
-Contributions are welcome! Please follow these steps:
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
-### Contribution Guidelines
-
-- Follow TypeScript best practices
-- Write meaningful commit messages
-- Add tests for new features
-- Update documentation as needed
-- Ensure code passes linting (`npm run lint`)
-
 ## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 👥 Team & Contributors
-
-| Name | Role | GitHub |
-|------|------|--------|
-| **Bhanu Kumar Dev** | Project Manager / Lead Full Stack Developer | [@bhanukumardev](https://github.com/bhanukumardev) |
-| **Kumar Gaurav** | Lead Frontend Developer | - |
-| **Yuvakshi Jyala** | UI/UX Designer & Documentation Lead | - |
-| **Gaurav** | Backend Developer & DevOps Engineer | - |
-| **Kanishka** | Database Architect & Supabase Integration | - |
-| **Aman Sinha** | QA Engineer & Junior Frontend Developer | - |
-
-## 🏆 Acknowledgments
-
-- **Smart India Hackathon 2025** - For the opportunity and challenge
-- **Supabase Team** - For excellent documentation and support
-- **React & TypeScript Communities** - For amazing resources
-- **KIIT University** - For infrastructure and guidance
-
-## 👤 Contact
-
-**Bhanu Kumar Dev**
-- 📧 Email: kumarbhanu818@gmail.com
-- 💼 LinkedIn: [bhanu-kumar-dev-97b820313](https://www.linkedin.com/in/bhanu-kumar-dev-97b820313)
-- 🐙 GitHub: [@bhanukumardev](https://github.com/bhanukumardev)
-- 🌐 Portfolio: [bhanukumardev.github.io/bhanu-portfolio](https://bhanukumardev.github.io/bhanu-portfolio/)
-
-## 📚 Additional Resources
-
-- [Project Documentation](docs/)
-- [API Reference](docs/api.md)
-- [Database Schema](docs/schema.md)
-- [Deployment Guide](docs/deployment.md)
-- [Contributing Guide](CONTRIBUTING.md)
-
 ---
 
 <div align="center">
-  <b>⭐ Star this repo to support disaster preparedness initiatives!</b>
-  <br>
-  Made with ❤️ for Smart India Hackathon by Team SurakshaSaathi
+  <b>⭐ RescueSync — Advancing Disaster Preparedness Globally.</b>
 </div>
