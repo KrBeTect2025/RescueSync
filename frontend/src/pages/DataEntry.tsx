@@ -9,17 +9,103 @@ import { Textarea } from '@/components/ui/textarea';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { toast } from 'sonner';
 import { Upload, Save } from 'lucide-react';
+import { useState } from 'react';
 
 const DataEntry = () => {
   const { language } = useLanguage();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [formData, setFormData] = useState({
+    name: '',
+    partner: '',
+    category: '',
+    mode: '',
+    state: '',
+    city: '',
+    venue: '',
+    startDate: '',
+    endDate: '',
+    participants: '',
+    description: ''
+  });
+
+  const handleChange = (field: string, value: string) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    toast.success(
-      language === 'hi' 
-        ? 'प्रशिक्षण डेटा सफलतापूर्वक सबमिट किया गया!' 
-        : 'Training data submitted successfully!'
-    );
+    
+    // Construct the object according to db.json format
+    const newTraining = {
+      name: formData.name,
+      state: formData.state,
+      city: formData.city,
+      date: `${formData.startDate} to ${formData.endDate}`,
+      participants: parseInt(formData.participants) || 0,
+      partner: formData.partner,
+      category: formData.category,
+      venue: formData.venue,
+      description: formData.description
+    };
+
+    try {
+      const response = await fetch('http://localhost:5000/api/trainings', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(newTraining)
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to submit');
+      }
+
+      toast.success(
+        language === 'hi' 
+          ? 'प्रशिक्षण डेटा सफलतापूर्वक सबमिट किया गया!' 
+          : 'Training data submitted successfully!'
+      );
+      
+      // Reset form
+      setFormData({
+        name: '',
+        partner: '',
+        category: '',
+        mode: '',
+        state: '',
+        city: '',
+        venue: '',
+        startDate: '',
+        endDate: '',
+        participants: '',
+        description: ''
+      });
+      
+    } catch (error) {
+      console.error('Submit error:', error);
+      toast.error(
+        language === 'hi'
+          ? 'डेटा सबमिट करने में विफल!'
+          : 'Failed to submit data!'
+      );
+    }
+  };
+
+  const handleReset = () => {
+    setFormData({
+      name: '',
+      partner: '',
+      category: '',
+      mode: '',
+      state: '',
+      city: '',
+      venue: '',
+      startDate: '',
+      endDate: '',
+      participants: '',
+      description: ''
+    });
   };
 
   return (
@@ -60,22 +146,27 @@ const DataEntry = () => {
                     <Label htmlFor="training-name">
                       {language === 'hi' ? 'प्रशिक्षण नाम' : 'Training Name'} *
                     </Label>
-                    <Input id="training-name" required />
+                    <Input 
+                      id="training-name" 
+                      required 
+                      value={formData.name}
+                      onChange={(e) => handleChange('name', e.target.value)}
+                    />
                   </div>
                   
                   <div className="space-y-2">
                     <Label htmlFor="partner">
                       {language === 'hi' ? 'प्रशिक्षण भागीदार' : 'Training Partner'} *
                     </Label>
-                    <Select>
+                    <Select value={formData.partner} onValueChange={(value) => handleChange('partner', value)}>
                       <SelectTrigger id="partner">
                         <SelectValue placeholder={language === 'hi' ? 'भागीदार चुनें' : 'Select partner'} />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="nidm">NIDM</SelectItem>
-                        <SelectItem value="lbsnaa">LBSNAA</SelectItem>
-                        <SelectItem value="sdma-mh">Maharashtra SDMA</SelectItem>
-                        <SelectItem value="sdma-kl">Kerala SDMA</SelectItem>
+                        <SelectItem value="NIDM">NIDM</SelectItem>
+                        <SelectItem value="LBSNAA">LBSNAA</SelectItem>
+                        <SelectItem value="Maharashtra SDMA">Maharashtra SDMA</SelectItem>
+                        <SelectItem value="Kerala SDMA">Kerala SDMA</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -86,21 +177,21 @@ const DataEntry = () => {
                     <Label htmlFor="category">
                       {language === 'hi' ? 'श्रेणी' : 'Category'} *
                     </Label>
-                    <Select>
+                    <Select value={formData.category} onValueChange={(value) => handleChange('category', value)}>
                       <SelectTrigger id="category">
                         <SelectValue placeholder={language === 'hi' ? 'श्रेणी चुनें' : 'Select category'} />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="capacity">
+                        <SelectItem value="Capacity Building">
                           {language === 'hi' ? 'क्षमता निर्माण' : 'Capacity Building'}
                         </SelectItem>
-                        <SelectItem value="response">
+                        <SelectItem value="Response">
                           {language === 'hi' ? 'प्रतिक्रिया प्रशिक्षण' : 'Response Training'}
                         </SelectItem>
-                        <SelectItem value="preparedness">
+                        <SelectItem value="Preparedness">
                           {language === 'hi' ? 'तैयारी' : 'Preparedness'}
                         </SelectItem>
-                        <SelectItem value="recovery">
+                        <SelectItem value="Recovery">
                           {language === 'hi' ? 'पुनर्प्राप्ति' : 'Recovery'}
                         </SelectItem>
                       </SelectContent>
@@ -111,7 +202,7 @@ const DataEntry = () => {
                     <Label htmlFor="mode">
                       {language === 'hi' ? 'प्रशिक्षण मोड' : 'Training Mode'} *
                     </Label>
-                    <Select>
+                    <Select value={formData.mode} onValueChange={(value) => handleChange('mode', value)}>
                       <SelectTrigger id="mode">
                         <SelectValue placeholder={language === 'hi' ? 'मोड चुनें' : 'Select mode'} />
                       </SelectTrigger>
@@ -136,15 +227,15 @@ const DataEntry = () => {
                     <Label htmlFor="state">
                       {language === 'hi' ? 'राज्य' : 'State'} *
                     </Label>
-                    <Select>
+                    <Select value={formData.state} onValueChange={(value) => handleChange('state', value)}>
                       <SelectTrigger id="state">
                         <SelectValue placeholder={language === 'hi' ? 'राज्य चुनें' : 'Select state'} />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="mh">{language === 'hi' ? 'महाराष्ट्र' : 'Maharashtra'}</SelectItem>
-                        <SelectItem value="kl">{language === 'hi' ? 'केरल' : 'Kerala'}</SelectItem>
-                        <SelectItem value="dl">{language === 'hi' ? 'दिल्ली' : 'Delhi'}</SelectItem>
-                        <SelectItem value="tn">{language === 'hi' ? 'तमिलनाडु' : 'Tamil Nadu'}</SelectItem>
+                        <SelectItem value="Maharashtra">{language === 'hi' ? 'महाराष्ट्र' : 'Maharashtra'}</SelectItem>
+                        <SelectItem value="Kerala">{language === 'hi' ? 'केरल' : 'Kerala'}</SelectItem>
+                        <SelectItem value="Delhi">{language === 'hi' ? 'दिल्ली' : 'Delhi'}</SelectItem>
+                        <SelectItem value="Tamil Nadu">{language === 'hi' ? 'तमिलनाडु' : 'Tamil Nadu'}</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -153,14 +244,23 @@ const DataEntry = () => {
                     <Label htmlFor="city">
                       {language === 'hi' ? 'शहर' : 'City'} *
                     </Label>
-                    <Input id="city" required />
+                    <Input 
+                      id="city" 
+                      required 
+                      value={formData.city}
+                      onChange={(e) => handleChange('city', e.target.value)}
+                    />
                   </div>
                   
                   <div className="space-y-2">
                     <Label htmlFor="venue">
                       {language === 'hi' ? 'स्थान' : 'Venue'}
                     </Label>
-                    <Input id="venue" />
+                    <Input 
+                      id="venue" 
+                      value={formData.venue}
+                      onChange={(e) => handleChange('venue', e.target.value)}
+                    />
                   </div>
                 </div>
               </div>
@@ -176,21 +276,39 @@ const DataEntry = () => {
                     <Label htmlFor="start-date">
                       {language === 'hi' ? 'प्रारंभ तिथि' : 'Start Date'} *
                     </Label>
-                    <Input id="start-date" type="date" required />
+                    <Input 
+                      id="start-date" 
+                      type="date" 
+                      required 
+                      value={formData.startDate}
+                      onChange={(e) => handleChange('startDate', e.target.value)}
+                    />
                   </div>
                   
                   <div className="space-y-2">
                     <Label htmlFor="end-date">
                       {language === 'hi' ? 'समाप्ति तिथि' : 'End Date'} *
                     </Label>
-                    <Input id="end-date" type="date" required />
+                    <Input 
+                      id="end-date" 
+                      type="date" 
+                      required 
+                      value={formData.endDate}
+                      onChange={(e) => handleChange('endDate', e.target.value)}
+                    />
                   </div>
                   
                   <div className="space-y-2">
                     <Label htmlFor="participants">
                       {language === 'hi' ? 'प्रतिभागी संख्या' : 'Number of Participants'} *
                     </Label>
-                    <Input id="participants" type="number" required />
+                    <Input 
+                      id="participants" 
+                      type="number" 
+                      required 
+                      value={formData.participants}
+                      onChange={(e) => handleChange('participants', e.target.value)}
+                    />
                   </div>
                 </div>
               </div>
@@ -209,6 +327,8 @@ const DataEntry = () => {
                     id="description" 
                     placeholder={language === 'hi' ? 'प्रशिक्षण के बारे में विवरण प्रदान करें' : 'Provide details about the training'}
                     className="min-h-[100px]"
+                    value={formData.description}
+                    onChange={(e) => handleChange('description', e.target.value)}
                   />
                 </div>
               </div>
@@ -226,7 +346,7 @@ const DataEntry = () => {
 
               {/* Submit */}
               <div className="flex justify-end gap-4">
-                <Button type="button" variant="outline">
+                <Button type="button" variant="outline" onClick={handleReset}>
                   {language === 'hi' ? 'रीसेट' : 'Reset'}
                 </Button>
                 <Button type="submit" className="bg-gradient-to-r from-primary to-primary/80">

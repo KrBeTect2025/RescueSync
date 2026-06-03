@@ -1,0 +1,35 @@
+[
+  {
+    "id": 1,
+    "name": "Disaster Response Training",
+    "state": "Maharashtra",
+    "city": "Mumbai",
+    "date": "2025-10-15 to 2025-10-18",
+    "participants": 150,
+    "status": "ongoing",
+    "partner": "NIDM",
+    "category": "Response"
+  },
+  {
+    "id": 2,
+    "name": "Capacity Building Workshop",
+    "state": "Kerala",
+    "city": "Thiruvananthapuram",
+    "date": "2025-10-20 to 2025-10-22",
+    "participants": 80,
+    "status": "scheduled",
+    "partner": "LBSNAA",
+    "category": "Capacity Building"
+  },
+  {
+    "id": 3,
+    "name": "Emergency Management Course",
+    "state": "Delhi",
+    "city": "New Delhi",
+    "date": "2025-10-01 to 2025-10-07",
+    "participants": 120,
+    "status": "completed",
+    "partner": "NDMA",
+    "category": "Preparedness"
+  }
+]

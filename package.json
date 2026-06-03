@@ -1,0 +1,14 @@
+{
+  "name": "rescuesync-root",
+  "version": "1.0.0",
+  "description": "RescueSync Disaster Management System",
+  "scripts": {
+    "install:all": "npm install --prefix frontend && npm install --prefix backend",
+    "dev:frontend": "npm run dev --prefix frontend",
+    "dev:backend": "node backend/server.js",
+    "dev": "npx concurrently \"npm run dev:frontend\" \"npm run dev:backend\""
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}

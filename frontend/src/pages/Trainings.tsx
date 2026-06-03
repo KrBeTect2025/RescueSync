@@ -5,47 +5,27 @@ import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Search, MapPin, Calendar, Users, Building } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 const Trainings = () => {
   const { language } = useLanguage();
   const [searchTerm, setSearchTerm] = useState('');
 
-  const trainings = [
-    {
-      id: 1,
-      name: language === 'hi' ? 'आपदा प्रतिक्रिया प्रशिक्षण' : 'Disaster Response Training',
-      state: language === 'hi' ? 'महाराष्ट्र' : 'Maharashtra',
-      city: language === 'hi' ? 'मुंबई' : 'Mumbai',
-      date: '2025-10-15 to 2025-10-18',
-      participants: 150,
-      status: 'ongoing',
-      partner: 'NIDM',
-      category: language === 'hi' ? 'प्रतिक्रिया' : 'Response'
-    },
-    {
-      id: 2,
-      name: language === 'hi' ? 'क्षमता निर्माण कार्यशाला' : 'Capacity Building Workshop',
-      state: language === 'hi' ? 'केरल' : 'Kerala',
-      city: language === 'hi' ? 'तिरुवनंतपुरम' : 'Thiruvananthapuram',
-      date: '2025-10-20 to 2025-10-22',
-      participants: 80,
-      status: 'scheduled',
-      partner: 'LBSNAA',
-      category: language === 'hi' ? 'क्षमता निर्माण' : 'Capacity Building'
-    },
-    {
-      id: 3,
-      name: language === 'hi' ? 'आपात प्रबंधन पाठ्यक्रम' : 'Emergency Management Course',
-      state: language === 'hi' ? 'दिल्ली' : 'Delhi',
-      city: language === 'hi' ? 'नई दिल्ली' : 'New Delhi',
-      date: '2025-10-01 to 2025-10-07',
-      participants: 120,
-      status: 'completed',
-      partner: 'NDMA',
-      category: language === 'hi' ? 'तैयारी' : 'Preparedness'
-    },
-  ];
+  const [trainings, setTrainings] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch('http://localhost:5000/api/trainings')
+      .then(res => res.json())
+      .then(data => {
+        setTrainings(data);
+        setLoading(false);
+      })
+      .catch(error => {
+        console.error('Error fetching trainings:', error);
+        setLoading(false);
+      });
+  }, []);
 
   const getStatusBadge = (status: string) => {
     const variants: Record<string, { color: string; label: string }> = {
@@ -94,7 +74,16 @@ const Trainings = () => {
 
         {/* Trainings List */}
         <div className="space-y-4">
-          {filteredTrainings.map((training) => (
+          {loading ? (
+            <div className="text-center py-8 text-muted-foreground">
+              {language === 'hi' ? 'लोड हो रहा है...' : 'Loading...'}
+            </div>
+          ) : filteredTrainings.length === 0 ? (
+            <div className="text-center py-8 text-muted-foreground">
+              {language === 'hi' ? 'कोई प्रशिक्षण नहीं मिला' : 'No trainings found'}
+            </div>
+          ) : (
+            filteredTrainings.map((training) => (
             <Card key={training.id} className="hover:shadow-lg transition-shadow">
               <CardHeader>
                 <div className="flex justify-between items-start">
@@ -128,7 +117,7 @@ const Trainings = () => {
                 </div>
               </CardContent>
             </Card>
-          ))}
+          )))}
         </div>
       </main>
 
