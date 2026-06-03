@@ -52,6 +52,39 @@ app.post('/api/trainings', (req, res) => {
   res.status(201).json(newTraining);
 });
 
+// PUT update existing training
+app.put('/api/trainings/:id', (req, res) => {
+  const trainings = readDB();
+  const id = parseInt(req.params.id);
+  
+  const index = trainings.findIndex(t => t.id === id);
+  if (index === -1) {
+    return res.status(404).json({ error: 'Training not found' });
+  }
+
+  // Update fields
+  trainings[index] = { ...trainings[index], ...req.body };
+  writeDB(trainings);
+
+  res.json(trainings[index]);
+});
+
+// DELETE existing training
+app.delete('/api/trainings/:id', (req, res) => {
+  const trainings = readDB();
+  const id = parseInt(req.params.id);
+  
+  const index = trainings.findIndex(t => t.id === id);
+  if (index === -1) {
+    return res.status(404).json({ error: 'Training not found' });
+  }
+
+  trainings.splice(index, 1);
+  writeDB(trainings);
+
+  res.status(204).send();
+});
+
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });

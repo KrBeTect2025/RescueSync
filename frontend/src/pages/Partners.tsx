@@ -3,12 +3,22 @@ import Footer from '@/components/Footer';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { Building, MapPin, GraduationCap, Users, Phone, Mail } from 'lucide-react';
+import { Building, MapPin, GraduationCap, Users, Mail } from 'lucide-react';
+import { useState, useEffect } from 'react';
 
 const Partners = () => {
   const { language } = useLanguage();
+  const [trainings, setTrainings] = useState<any[]>([]);
 
-  const partners = [
+  useEffect(() => {
+    fetch('http://localhost:5000/api/trainings')
+      .then(res => res.json())
+      .then(data => setTrainings(data))
+      .catch(err => console.error('Error fetching partners stats:', err));
+  }, []);
+
+  // Baseline partners data
+  const basePartners = [
     {
       name: 'NIDM',
       fullName: language === 'hi' ? 'राष्ट्रीय आपदा प्रबंधन संस्थान' : 'National Institute of Disaster Management',
@@ -62,6 +72,25 @@ const Partners = () => {
       contact: 'sdma@kerala.gov.in'
     },
   ];
+
+  // Calculate dynamic stats per partner
+  const partners = basePartners.map(p => {
+    // Find matching trainings in db.json for this partner
+    const partnerTrainings = trainings.filter(t => {
+      // Handle key matches like "NIDM", "LBSNAA", "Maharashtra SDMA", "Kerala SDMA"
+      const tPartner = (t.partner || '').toLowerCase();
+      const pName = p.name.toLowerCase();
+      return tPartner === pName || 
+             (pName.includes('maharashtra') && tPartner.includes('maharashtra')) ||
+             (pName.includes('kerala') && tPartner.includes('kerala'));
+    });
+
+    return {
+      ...p,
+      trainings: p.trainings + partnerTrainings.length,
+      participants: p.participants + partnerTrainings.reduce((sum, t) => sum + (t.participants || 0), 0)
+    };
+  });
 
   const totalStats = {
     partners: 42,

@@ -2,6 +2,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useTheme } from '@/contexts/ThemeContext';
+import { useAuth } from '@/contexts/AuthContext';
 import {
   LayoutDashboard,
   GraduationCap,
@@ -14,15 +15,23 @@ import {
   Globe,
   Moon,
   Sun,
-  Menu
+  Menu,
+  Shield
 } from 'lucide-react';
 import logo from '@/assets/suraksha-saathi-logo.png';
 import { useState } from 'react';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const Header = () => {
   const location = useLocation();
   const { t, language, setLanguage } = useLanguage();
   const { theme, toggleTheme } = useTheme();
+  const { role, setRole } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const navItems = [
@@ -73,6 +82,21 @@ const Header = () => {
 
         {/* Controls */}
         <div className="flex items-center gap-2 min-w-[140px] flex-shrink-0 justify-end">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" size="sm" className="hidden sm:flex h-9 border-dashed font-medium text-xs">
+                <Shield className="mr-2 h-4 w-4" />
+                {role}
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem onClick={() => setRole('Admin')}>Admin</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setRole('Partner Admin')}>Partner Admin</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setRole('State Coordinator')}>State Coordinator</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setRole('Data Entry')}>Data Entry</DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+
           <Button
             variant="outline"
             size="icon"

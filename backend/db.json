@@ -31,5 +31,18 @@
     "status": "completed",
     "partner": "NDMA",
     "category": "Preparedness"
+  },
+  {
+    "name": "New data ",
+    "state": "Delhi",
+    "city": "Noida",
+    "date": "2026-06-18 to 2026-06-30",
+    "participants": 20,
+    "partner": "Maharashtra SDMA",
+    "category": "Response",
+    "venue": "",
+    "description": "",
+    "id": 4,
+    "status": "scheduled"
   }
 ]
