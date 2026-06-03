@@ -1,4 +1,5 @@
 import Header from '@/components/Header';
+import { API_BASE_URL } from '@/lib/api';
 import Footer from '@/components/Footer';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -49,7 +50,7 @@ const DataEntry = () => {
     };
 
     try {
-      const response = await fetch('http://localhost:5000/api/trainings', {
+      const response = await fetch(`${API_BASE_URL}/api/trainings`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

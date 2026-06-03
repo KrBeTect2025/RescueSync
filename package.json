@@ -8,6 +8,12 @@
     "dev:backend": "node backend/server.js",
     "dev": "npx concurrently \"npm run dev:frontend\" \"npm run dev:backend\""
   },
+
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5"
+  },
+
   "devDependencies": {
     "concurrently": "^8.2.2"
   }

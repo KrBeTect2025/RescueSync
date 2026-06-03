@@ -7,8 +7,34 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 const DB_FILE = path.join(__dirname, 'db.json');
 
-app.use(cors());
+// CORS configuration — allow your Vercel frontend (and localhost for dev)
+const allowedOrigins = [
+  'http://localhost:5173',
+  'http://localhost:3000',
+  process.env.FRONTEND_URL, // Set this in Render env vars to your Vercel URL
+].filter(Boolean);
+
+app.use(cors({
+  origin: function (origin, callback) {
+    // Allow requests with no origin (mobile apps, curl, etc.)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.some(allowed => origin.startsWith(allowed))) {
+      return callback(null, true);
+    }
+    // Also allow any *.vercel.app origin
+    if (origin.endsWith('.vercel.app')) {
+      return callback(null, true);
+    }
+    return callback(null, true); // Allow all for now; restrict in production as needed
+  },
+  credentials: true,
+}));
 app.use(express.json());
+
+// Health check endpoint (Render uses this to verify the service is running)
+app.get('/health', (req, res) => {
+  res.status(200).json({ status: 'ok', timestamp: new Date().toISOString() });
+});
 
 // Helper function to read DB
 const readDB = () => {

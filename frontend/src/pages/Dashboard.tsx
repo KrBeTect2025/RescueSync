@@ -1,4 +1,5 @@
 import Header from '@/components/Header';
+import { API_BASE_URL } from '@/lib/api';
 import Footer from '@/components/Footer';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -11,7 +12,7 @@ const Dashboard = () => {
   const [trainings, setTrainings] = useState<any[]>([]);
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/trainings')
+    fetch(`${API_BASE_URL}/api/trainings`)
       .then(res => res.json())
       .then(data => setTrainings(data))
       .catch(err => console.error('Error fetching dashboard stats:', err));

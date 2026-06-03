@@ -1,4 +1,5 @@
 import Header from '@/components/Header';
+import { API_BASE_URL } from '@/lib/api';
 import Footer from '@/components/Footer';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -11,7 +12,7 @@ const Partners = () => {
   const [trainings, setTrainings] = useState<any[]>([]);
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/trainings')
+    fetch(`${API_BASE_URL}/api/trainings`)
       .then(res => res.json())
       .then(data => setTrainings(data))
       .catch(err => console.error('Error fetching partners stats:', err));

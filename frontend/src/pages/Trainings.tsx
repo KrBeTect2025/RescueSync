@@ -1,4 +1,5 @@
 import Header from '@/components/Header';
+import { API_BASE_URL } from '@/lib/api';
 import Footer from '@/components/Footer';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -25,7 +26,7 @@ const Trainings = () => {
   const [editFormData, setEditFormData] = useState<any>({});
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/trainings')
+    fetch(`${API_BASE_URL}/api/trainings`)
       .then(res => res.json())
       .then(data => {
         setTrainings(data);
@@ -56,7 +57,7 @@ const Trainings = () => {
   const handleDelete = async (id: number) => {
     if (!window.confirm('Are you sure you want to delete this training record?')) return;
     try {
-      const res = await fetch(`http://localhost:5000/api/trainings/${id}`, {
+      const res = await fetch(`${API_BASE_URL}/api/trainings/${id}`, {
         method: 'DELETE',
       });
       if (res.ok) {
@@ -77,7 +78,7 @@ const Trainings = () => {
 
   const handleEditSubmit = async () => {
     try {
-      const res = await fetch(`http://localhost:5000/api/trainings/${editingTraining.id}`, {
+      const res = await fetch(`${API_BASE_URL}/api/trainings/${editingTraining.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(editFormData),
