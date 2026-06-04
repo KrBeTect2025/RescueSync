@@ -13,6 +13,7 @@ import Trainings from "./pages/Trainings";
 import Analytics from "./pages/Analytics";
 import Partners from "./pages/Partners";
 import DataEntry from "./pages/DataEntry";
+import EmergencyResponse from "./pages/EmergencyResponse";
 import MapView from "./pages/MapView";
 import Users from "./pages/Users";
 import NotFound from "./pages/NotFound";
@@ -26,26 +27,27 @@ const App = () => (
       <LanguageProvider>
         <AuthProvider>
           <TooltipProvider>
-          <Toaster />
-          <Sonner />
-          <BrowserRouter>
-            <Routes>
-              <Route path="/" element={<Navigate to="/login" replace />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/overview" element={<Index />} />
-              <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/trainings" element={<Trainings />} />
-              <Route path="/analytics" element={<Analytics />} />
-              <Route path="/partners" element={<Partners />} />
-              <Route path="/data-entry" element={<DataEntry />} />
-              <Route path="/map" element={<MapView />} />
-              <Route path="/users" element={<Users />} />
-              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-            <Chatbot />
-          </BrowserRouter>
-        </TooltipProvider>
+            <Toaster />
+            <Sonner />
+            <BrowserRouter>
+              <Routes>
+                <Route path="/" element={<Navigate to="/login" replace />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/overview" element={<Index />} />
+                <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/trainings" element={<Trainings />} />
+                <Route path="/analytics" element={<Analytics />} />
+                <Route path="/partners" element={<Partners />} />
+                <Route path="/data-entry" element={<DataEntry />} />
+                <Route path="/emergency" element={<EmergencyResponse />} />
+                <Route path="/map" element={<MapView />} />
+                <Route path="/users" element={<Users />} />
+                {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+              <Chatbot />
+            </BrowserRouter>
+          </TooltipProvider>
         </AuthProvider>
       </LanguageProvider>
     </ThemeProvider>

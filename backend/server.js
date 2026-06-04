@@ -47,6 +47,18 @@ const readDB = () => {
   }
 };
 
+const EMERGENCY_DB_FILE = path.join(__dirname, 'emergencies.json');
+
+const readEmergencyDB = () => {
+  try {
+    const data = fs.readFileSync(EMERGENCY_DB_FILE, 'utf8');
+    return JSON.parse(data);
+  } catch (error) {
+    console.error('Error reading emergencies.json:', error);
+    return [];
+  }
+};
+
 // Helper function to write to DB
 const writeDB = (data) => {
   try {
@@ -56,25 +68,72 @@ const writeDB = (data) => {
   }
 };
 
+const writeEmergencyDB = (data) => {
+  try {
+    fs.writeFileSync(EMERGENCY_DB_FILE, JSON.stringify(data, null, 2), 'utf8');
+  } catch (error) {
+    console.error('Error writing to emergencies.json:', error);
+  }
+};
+
 // GET all trainings
 app.get('/api/trainings', (req, res) => {
   const trainings = readDB();
   res.json(trainings);
 });
 
+// GET all emergency incidents
+app.get('/api/emergencies', (req, res) => {
+  const emergencies = readEmergencyDB();
+  res.json(emergencies);
+});
+
+// POST new emergency incident
+app.post('/api/emergencies', (req, res) => {
+  const emergencies = readEmergencyDB();
+
+  const newEmergency = {
+    ...req.body,
+    id: emergencies.length > 0 ? Math.max(...emergencies.map(e => e.id)) + 1 : 1,
+    status: req.body.status || 'active',
+    createdAt: new Date().toISOString(),
+  };
+
+  emergencies.push(newEmergency);
+  writeEmergencyDB(emergencies);
+
+  res.status(201).json(newEmergency);
+});
+
+// PUT update existing emergency incident
+app.put('/api/emergencies/:id', (req, res) => {
+  const emergencies = readEmergencyDB();
+  const id = parseInt(req.params.id);
+
+  const index = emergencies.findIndex(e => e.id === id);
+  if (index === -1) {
+    return res.status(404).json({ error: 'Emergency incident not found' });
+  }
+
+  emergencies[index] = { ...emergencies[index], ...req.body };
+  writeEmergencyDB(emergencies);
+
+  res.json(emergencies[index]);
+});
+
 // POST new training
 app.post('/api/trainings', (req, res) => {
   const trainings = readDB();
-  
+
   const newTraining = {
     ...req.body,
     id: trainings.length > 0 ? Math.max(...trainings.map(t => t.id)) + 1 : 1,
     status: req.body.status || 'scheduled', // default status
   };
-  
+
   trainings.push(newTraining);
   writeDB(trainings);
-  
+
   res.status(201).json(newTraining);
 });
 
@@ -82,7 +141,7 @@ app.post('/api/trainings', (req, res) => {
 app.put('/api/trainings/:id', (req, res) => {
   const trainings = readDB();
   const id = parseInt(req.params.id);
-  
+
   const index = trainings.findIndex(t => t.id === id);
   if (index === -1) {
     return res.status(404).json({ error: 'Training not found' });
@@ -99,7 +158,7 @@ app.put('/api/trainings/:id', (req, res) => {
 app.delete('/api/trainings/:id', (req, res) => {
   const trainings = readDB();
   const id = parseInt(req.params.id);
-  
+
   const index = trainings.findIndex(t => t.id === id);
   if (index === -1) {
     return res.status(404).json({ error: 'Training not found' });

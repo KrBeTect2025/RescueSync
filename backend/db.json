@@ -22,17 +22,6 @@
     "category": "Capacity Building"
   },
   {
-    "id": 3,
-    "name": "Emergency Management Course",
-    "state": "Delhi",
-    "city": "New Delhi",
-    "date": "2025-10-01 to 2025-10-07",
-    "participants": 120,
-    "status": "completed",
-    "partner": "NDMA",
-    "category": "Preparedness"
-  },
-  {
     "name": "New data ",
     "state": "Delhi",
     "city": "Noida",
@@ -43,6 +32,19 @@
     "venue": "",
     "description": "",
     "id": 4,
+    "status": "scheduled"
+  },
+  {
+    "name": "neW ",
+    "state": "Tamil Nadu",
+    "city": "noID",
+    "date": "2026-06-26 to 2026-06-30",
+    "participants": 23131,
+    "partner": "LBSNAA",
+    "category": "Preparedness",
+    "venue": "",
+    "description": "",
+    "id": 5,
     "status": "scheduled"
   }
 ]

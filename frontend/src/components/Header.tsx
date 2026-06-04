@@ -16,7 +16,8 @@ import {
   Moon,
   Sun,
   Menu,
-  Shield
+  Shield,
+  AlertCircle,
 } from 'lucide-react';
 import logo from '@/assets/suraksha-saathi-logo.png';
 import { useState } from 'react';
@@ -41,6 +42,7 @@ const Header = () => {
     { path: '/analytics', label: t('analytics'), icon: BarChart3 },
     { path: '/partners', label: t('partners'), icon: Users },
     { path: '/data-entry', label: t('dataEntry'), icon: FileInput },
+    { path: '/emergency', label: t('emergency'), icon: AlertCircle },
     { path: '/map', label: t('map'), icon: Map },
     { path: '/users', label: t('users'), icon: UserCog },
   ];
