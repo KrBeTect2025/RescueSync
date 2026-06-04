@@ -19,6 +19,7 @@ interface EmergencyIncident {
     state: string;
     city: string;
     severity: string;
+    priority: string;
     category: string;
     contact: string;
     description: string;
@@ -31,6 +32,7 @@ const initialFormData = {
     state: '',
     city: '',
     severity: '',
+    priority: '',
     category: '',
     contact: '',
     description: '',
@@ -41,6 +43,7 @@ const EmergencyResponse = () => {
     const [formData, setFormData] = useState(initialFormData);
     const [incidents, setIncidents] = useState<EmergencyIncident[]>([]);
     const [loading, setLoading] = useState(false);
+    const [nearestStationInfo, setNearestStationInfo] = useState<string>('');
 
     const emergencyContacts = [
         {
@@ -89,11 +92,53 @@ const EmergencyResponse = () => {
         setFormData(prev => ({ ...prev, [field]: value }));
     };
 
-    const resetForm = () => setFormData(initialFormData);
+    const findNearestStation = () => {
+        const stations = [
+            { state: 'Maharashtra', city: 'Mumbai', name: 'Mumbai Emergency Response Station', phone: '+91-22-4000-1234' },
+            { state: 'Maharashtra', city: 'Pune', name: 'Pune Emergency Response Station', phone: '+91-20-4123-5678' },
+            { state: 'Kerala', city: 'Thiruvananthapuram', name: 'Thiruvananthapuram Emergency Station', phone: '+91-471-234-5678' },
+            { state: 'Delhi', city: 'New Delhi', name: 'Delhi Emergency Response Station', phone: '+91-11-3344-5566' },
+            { state: 'Tamil Nadu', city: 'Chennai', name: 'Chennai Emergency Response Station', phone: '+91-44-5566-7788' },
+        ];
+
+        const match = stations.find((station) =>
+            station.state === formData.state && station.city.toLowerCase() === formData.city.trim().toLowerCase()
+        );
+
+        if (match) {
+            setNearestStationInfo(
+                language === 'hi'
+                    ? `निकटतम स्टेशन: ${match.name} (${match.phone})`
+                    : `Nearest station: ${match.name} (${match.phone})`
+            );
+            return;
+        }
+
+        const stateMatch = stations.find((station) => station.state === formData.state);
+        if (stateMatch) {
+            setNearestStationInfo(
+                language === 'hi'
+                    ? `निकटतम स्टेशन: ${stateMatch.name} (${stateMatch.phone})`
+                    : `Nearest station: ${stateMatch.name} (${stateMatch.phone})`
+            );
+            return;
+        }
+
+        setNearestStationInfo(
+            language === 'hi'
+                ? 'निकटतम स्टेशन का डेटा उपलब्ध नहीं है। कृपया शहर और राज्य सही करें।'
+                : 'Nearest station data is not available. Please check the city and state.'
+        );
+    };
+
+    const resetForm = () => {
+        setFormData(initialFormData);
+        setNearestStationInfo('');
+    };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!formData.title || !formData.state || !formData.city || !formData.severity || !formData.contact) {
+        if (!formData.title || !formData.state || !formData.city || !formData.severity || !formData.priority || !formData.contact) {
             toast.error(
                 language === 'hi' ? 'कृपया आवश्यक फ़ील्ड भरें' : 'Please complete the required fields'
             );
@@ -236,11 +281,18 @@ const EmergencyResponse = () => {
                                                             {incident.city}, {incident.state} • {new Date(incident.createdAt).toLocaleString()}
                                                         </p>
                                                     </div>
-                                                    <Badge variant={incident.status === 'resolved' ? 'secondary' : incident.severity === 'Critical' ? 'destructive' : 'outline'}>
-                                                        {incident.status === 'resolved'
-                                                            ? language === 'hi' ? 'निपटाया गया' : 'Resolved'
-                                                            : incident.severity}
-                                                    </Badge>
+                                                    <div className="flex flex-wrap items-center gap-2">
+                                                        <Badge variant={incident.status === 'resolved' ? 'secondary' : incident.severity === 'Critical' ? 'destructive' : 'outline'}>
+                                                            {incident.status === 'resolved'
+                                                                ? language === 'hi' ? 'निपटाया गया' : 'Resolved'
+                                                                : incident.severity}
+                                                        </Badge>
+                                                        {incident.priority && (
+                                                            <Badge variant={incident.priority === 'Critical' ? 'destructive' : incident.priority === 'High' ? 'secondary' : 'outline'}>
+                                                                {language === 'hi' ? `${incident.priority} प्राथमिकता` : `${incident.priority} priority`}
+                                                            </Badge>
+                                                        )}
+                                                    </div>
                                                 </div>
                                                 <p className="mt-3 text-sm text-muted-foreground">{incident.description}</p>
                                                 <div className="mt-4 flex flex-wrap items-center gap-3">
@@ -307,12 +359,26 @@ const EmergencyResponse = () => {
                                         </div>
                                     </div>
 
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                                         <div className="space-y-2">
                                             <Label htmlFor="severity">{language === 'hi' ? 'गंभीरता' : 'Severity'} *</Label>
                                             <Select value={formData.severity} onValueChange={(value) => handleChange('severity', value)}>
                                                 <SelectTrigger id="severity">
                                                     <SelectValue placeholder={language === 'hi' ? 'चयन करें' : 'Select severity'} />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    <SelectItem value="Low">{language === 'hi' ? 'कम' : 'Low'}</SelectItem>
+                                                    <SelectItem value="Medium">{language === 'hi' ? 'मध्यम' : 'Medium'}</SelectItem>
+                                                    <SelectItem value="High">{language === 'hi' ? 'उच्च' : 'High'}</SelectItem>
+                                                    <SelectItem value="Critical">{language === 'hi' ? 'गंभीर' : 'Critical'}</SelectItem>
+                                                </SelectContent>
+                                            </Select>
+                                        </div>
+                                        <div className="space-y-2">
+                                            <Label htmlFor="priority">{language === 'hi' ? 'प्राथमिकता' : 'Priority'} *</Label>
+                                            <Select value={formData.priority} onValueChange={(value) => handleChange('priority', value)}>
+                                                <SelectTrigger id="priority">
+                                                    <SelectValue placeholder={language === 'hi' ? 'चयन करें' : 'Select priority'} />
                                                 </SelectTrigger>
                                                 <SelectContent>
                                                     <SelectItem value="Low">{language === 'hi' ? 'कम' : 'Low'}</SelectItem>
@@ -330,7 +396,7 @@ const EmergencyResponse = () => {
                                                 </SelectTrigger>
                                                 <SelectContent>
                                                     <SelectItem value="Flood">{language === 'hi' ? 'बाढ़' : 'Flood'}</SelectItem>
-                                                    <SelectItem value="Storm">{language === 'hi' ? 'तूफान' : 'Storm'}</SelectItem>
+                                                    <SelectItem value="Storm">{language === 'hi' ? 'तूफ़ान' : 'Storm'}</SelectItem>
                                                     <SelectItem value="Fire">{language === 'hi' ? 'आग' : 'Fire'}</SelectItem>
                                                     <SelectItem value="Other">{language === 'hi' ? 'अन्य' : 'Other'}</SelectItem>
                                                 </SelectContent>
@@ -356,6 +422,17 @@ const EmergencyResponse = () => {
                                             onChange={(e) => handleChange('description', e.target.value)}
                                             rows={5}
                                         />
+                                    </div>
+
+                                    <div className="flex flex-wrap items-center gap-3 pt-2">
+                                        <Button type="button" variant="outline" onClick={findNearestStation}>
+                                            {language === 'hi' ? 'निकटतम स्टेशन देखें' : 'Find Nearest Station'}
+                                        </Button>
+                                        {nearestStationInfo && (
+                                            <p className="text-sm text-muted-foreground">
+                                                {nearestStationInfo}
+                                            </p>
+                                        )}
                                     </div>
 
                                     <div className="flex flex-wrap gap-3 pt-2">

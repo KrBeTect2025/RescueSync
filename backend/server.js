@@ -91,12 +91,31 @@ app.get('/api/emergencies', (req, res) => {
 // POST new emergency incident
 app.post('/api/emergencies', (req, res) => {
   const emergencies = readEmergencyDB();
+  const now = new Date();
+  const lookbackMinutes = 10;
+  const lookbackThreshold = new Date(now.getTime() - lookbackMinutes * 60 * 1000);
+
+  const recentSameContact = emergencies.filter((e) =>
+    e.contact === req.body.contact && new Date(e.createdAt) >= lookbackThreshold
+  );
+
+  const recentSameLocation = emergencies.filter((e) =>
+    e.state === req.body.state && e.city === req.body.city && new Date(e.createdAt) >= lookbackThreshold
+  );
+
+  let computedPriority = req.body.priority || 'Medium';
+  if (recentSameContact.length >= 3 || recentSameLocation.length >= 5) {
+    computedPriority = 'Critical';
+  } else if (recentSameContact.length >= 2 || recentSameLocation.length >= 3) {
+    computedPriority = 'High';
+  }
 
   const newEmergency = {
     ...req.body,
     id: emergencies.length > 0 ? Math.max(...emergencies.map(e => e.id)) + 1 : 1,
     status: req.body.status || 'active',
-    createdAt: new Date().toISOString(),
+    priority: computedPriority,
+    createdAt: now.toISOString(),
   };
 
   emergencies.push(newEmergency);
