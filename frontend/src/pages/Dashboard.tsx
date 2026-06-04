@@ -12,20 +12,31 @@ const Dashboard = () => {
   const [trainings, setTrainings] = useState<any[]>([]);
 
   useEffect(() => {
-    fetch(`${API_BASE_URL}/api/trainings`)
-      .then(res => res.json())
-      .then(data => setTrainings(data))
-      .catch(err => console.error('Error fetching dashboard stats:', err));
+    let mounted = true;
+    const fetchTrainings = () => {
+      fetch(`${API_BASE_URL}/api/trainings`)
+        .then(res => res.json())
+        .then(data => {
+          if (mounted) setTrainings(data);
+        })
+        .catch(err => console.error('Error fetching dashboard stats:', err));
+    };
+
+    // initial fetch
+    fetchTrainings();
+    // poll every 5 seconds so charts reflect new trainings
+    const id = setInterval(fetchTrainings, 5000);
+    return () => { mounted = false; clearInterval(id); };
   }, []);
 
   // Calculate dynamic stats on top of baseline
   const activeTrainingsCount = 127 + trainings.filter(t => t.status === 'ongoing').length;
   const monthlyConductedCount = 48 + trainings.filter(t => {
     // simple check if it has been added this month
-    return true; 
+    return true;
   }).length;
   const totalParticipants = 15234 + trainings.reduce((acc, t) => acc + (t.participants || 0), 0);
-  
+
   const stats = [
     {
       title: language === 'hi' ? 'सक्रिय प्रशिक्षण' : 'Active Trainings',
@@ -50,7 +61,14 @@ const Dashboard = () => {
     },
     {
       title: language === 'hi' ? 'पूर्णता दर' : 'Completion Rate',
-      value: '87%',
+      // compute completion rate from trainings (fallback to 87% if no data)
+      value: (() => {
+        const completed = trainings.filter(t => t.status === 'completed').length;
+        const total = trainings.length;
+        if (total === 0) return '87%';
+        const percent = Math.round((completed / total) * 100);
+        return `${percent}%`;
+      })(),
       change: '+5%',
       icon: TrendingUp,
       color: 'text-primary'
@@ -58,13 +76,32 @@ const Dashboard = () => {
   ];
 
   // Baseline monthly data
-  const monthlyData = [
-    { month: language === 'hi' ? 'जन' : 'Jan', trainings: 35 },
-    { month: language === 'hi' ? 'फ़र' : 'Feb', trainings: 42 },
-    { month: language === 'hi' ? 'मार्च' : 'Mar', trainings: 38 },
-    { month: language === 'hi' ? 'अप्रै' : 'Apr', trainings: 45 },
-    { month: language === 'hi' ? 'मई' : 'May', trainings: 48 + trainings.length },
+  // Build monthly counts from trainings' createdAt timestamps (fallback to baseline if none)
+  const monthNames = [
+    language === 'hi' ? 'जन' : 'Jan',
+    language === 'hi' ? 'फ़र' : 'Feb',
+    language === 'hi' ? 'मार्च' : 'Mar',
+    language === 'hi' ? 'अप्रै' : 'Apr',
+    language === 'hi' ? 'मई' : 'May',
   ];
+
+  // baseline values for older months
+  const baselineMonthly = [35, 42, 38, 45, 48];
+
+  const computedMonthly = baselineMonthly.slice();
+  trainings.forEach(t => {
+    if (t.createdAt) {
+      const d = new Date(t.createdAt);
+      const m = d.getMonth(); // 0-11
+      // only aggregate for first 5 months shown (Jan-May)
+      if (m >= 0 && m < 5) computedMonthly[m] += 1;
+    } else {
+      // if no timestamp, add to current month (May index 4)
+      computedMonthly[4] += 1;
+    }
+  });
+
+  const monthlyData = monthNames.map((name, idx) => ({ month: name, trainings: computedMonthly[idx] }));
 
   // Dynamic category distribution (accumulate on top of baseline values)
   const categoryCounts: Record<string, number> = {
@@ -103,15 +140,15 @@ const Dashboard = () => {
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
-      
+
       <main className="flex-1 container max-w-[1800px] py-6 px-6">
         <div className="mb-6">
           <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-primary to-success bg-clip-text text-transparent">
             {language === 'hi' ? 'रीयल-टाइम डैशबोर्ड' : 'Real-Time Dashboard'}
           </h1>
           <p className="text-muted-foreground text-lg">
-            {language === 'hi' 
-              ? 'राष्ट्रव्यापी प्रशिक्षण गतिविधियों की व्यापक निगरानी' 
+            {language === 'hi'
+              ? 'राष्ट्रव्यापी प्रशिक्षण गतिविधियों की व्यापक निगरानी'
               : 'Comprehensive monitoring of training activities nationwide'}
           </p>
         </div>
@@ -201,16 +238,16 @@ const Dashboard = () => {
               <li className="flex items-start gap-2">
                 <MapPin className="h-4 w-4 mt-1 text-destructive" />
                 <span>
-                  {language === 'hi' 
-                    ? 'उत्तर प्रदेश में कम कवरेज - पिछले महीने केवल 12 प्रशिक्षण' 
+                  {language === 'hi'
+                    ? 'उत्तर प्रदेश में कम कवरेज - पिछले महीने केवल 12 प्रशिक्षण'
                     : 'Low coverage in Uttar Pradesh - Only 12 trainings last month'}
                 </span>
               </li>
               <li className="flex items-start gap-2">
                 <MapPin className="h-4 w-4 mt-1 text-destructive" />
                 <span>
-                  {language === 'hi' 
-                    ? 'बिहार में विलंबित रिपोर्टिंग - 3 राज्य एजेंसियां लंबित' 
+                  {language === 'hi'
+                    ? 'बिहार में विलंबित रिपोर्टिंग - 3 राज्य एजेंसियां लंबित'
                     : 'Delayed reporting in Bihar - 3 state agencies pending'}
                 </span>
               </li>

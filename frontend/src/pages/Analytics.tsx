@@ -2,19 +2,65 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { API_BASE_URL } from '@/lib/api';
+import { useState, useEffect } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { TrendingUp, MapPin, Target } from 'lucide-react';
 
 const Analytics = () => {
   const { language } = useLanguage();
 
-  const stateData = [
-    { state: language === 'hi' ? 'महाराष्ट्र' : 'Maharashtra', trainings: 42, participants: 3200 },
-    { state: language === 'hi' ? 'केरल' : 'Kerala', trainings: 38, participants: 2800 },
-    { state: language === 'hi' ? 'दिल्ली' : 'Delhi', trainings: 35, participants: 2500 },
-    { state: language === 'hi' ? 'तमिलनाडु' : 'Tamil Nadu', trainings: 32, participants: 2300 },
-    { state: language === 'hi' ? 'कर्नाटक' : 'Karnataka', trainings: 28, participants: 2100 },
-  ];
+  const [trainings, setTrainings] = useState<any[]>([]);
+
+  useEffect(() => {
+    let mounted = true;
+    const fetchTrainings = () => {
+      fetch(`${API_BASE_URL}/api/trainings`)
+        .then(res => res.json())
+        .then(data => { if (mounted) setTrainings(data); })
+        .catch(err => console.error('Error fetching trainings for analytics:', err));
+    };
+
+    fetchTrainings();
+    const id = setInterval(fetchTrainings, 5000);
+    return () => { mounted = false; clearInterval(id); };
+  }, []);
+
+  // baseline state data
+  const baselineStates: Record<string, { trainings: number; participants: number }> = {
+    'Maharashtra': { trainings: 42, participants: 3200 },
+    'Kerala': { trainings: 38, participants: 2800 },
+    'Delhi': { trainings: 35, participants: 2500 },
+    'Tamil Nadu': { trainings: 32, participants: 2300 },
+    'Karnataka': { trainings: 28, participants: 2100 },
+  };
+
+  // aggregate trainings into states (merge onto baseline)
+  const computedStates = Object.keys(baselineStates).reduce((acc, k) => {
+    acc[k] = { ...baselineStates[k] };
+    return acc;
+  }, {} as Record<string, { trainings: number; participants: number }>);
+
+  trainings.forEach(t => {
+    const rawState = (t.state || (t.location && t.location.state) || t.address?.state || '').toString();
+    if (!rawState) return;
+    const sLower = rawState.toLowerCase();
+    let matched = false;
+    Object.keys(computedStates).forEach(k => {
+      if (sLower.includes(k.toLowerCase())) {
+        computedStates[k].trainings += 1;
+        computedStates[k].participants += Number(t.participants || 0);
+        matched = true;
+      }
+    });
+    // if not matched, optionally ignore or add to 'Other' (not shown)
+  });
+
+  const stateData = Object.keys(computedStates).map(k => ({
+    state: language === 'hi' ? (
+      k === 'Maharashtra' ? 'महाराष्ट्र' : k === 'Kerala' ? 'केरल' : k === 'Delhi' ? 'दिल्ली' : k === 'Tamil Nadu' ? 'तमिलनाडु' : k === 'Karnataka' ? 'कर्नाटक' : k
+    ) : k, trainings: computedStates[k].trainings, participants: computedStates[k].participants
+  }));
 
   const impactMetrics = [
     {
@@ -40,15 +86,15 @@ const Analytics = () => {
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
-      
+
       <main className="flex-1 container max-w-[1800px] py-6 px-6">
         <div className="mb-6">
           <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-primary to-success bg-clip-text text-transparent">
             {language === 'hi' ? 'विश्लेषण और अंतर्दृष्टि' : 'Analytics & Insights'}
           </h1>
           <p className="text-muted-foreground text-lg">
-            {language === 'hi' 
-              ? 'प्रशिक्षण प्रभाव और कवरेज की गहन विश्लेषण' 
+            {language === 'hi'
+              ? 'प्रशिक्षण प्रभाव और कवरेज की गहन विश्लेषण'
               : 'In-depth analysis of training impact and coverage'}
           </p>
         </div>
@@ -90,17 +136,17 @@ const Analytics = () => {
                 <YAxis yAxisId="right" orientation="right" stroke="hsl(var(--secondary))" />
                 <Tooltip />
                 <Legend />
-                <Bar 
-                  yAxisId="left" 
-                  dataKey="trainings" 
-                  fill="hsl(var(--primary))" 
-                  name={language === 'hi' ? 'प्रशिक्षण' : 'Trainings'} 
+                <Bar
+                  yAxisId="left"
+                  dataKey="trainings"
+                  fill="hsl(var(--primary))"
+                  name={language === 'hi' ? 'प्रशिक्षण' : 'Trainings'}
                 />
-                <Bar 
-                  yAxisId="right" 
-                  dataKey="participants" 
-                  fill="hsl(var(--secondary))" 
-                  name={language === 'hi' ? 'प्रतिभागी' : 'Participants'} 
+                <Bar
+                  yAxisId="right"
+                  dataKey="participants"
+                  fill="hsl(var(--secondary))"
+                  name={language === 'hi' ? 'प्रतिभागी' : 'Participants'}
                 />
               </BarChart>
             </ResponsiveContainer>
