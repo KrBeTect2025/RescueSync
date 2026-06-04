@@ -31,10 +31,18 @@ const Dashboard = () => {
 
   // Calculate dynamic stats on top of baseline
   const activeTrainingsCount = 127 + trainings.filter(t => t.status === 'ongoing').length;
-  const monthlyConductedCount = 48 + trainings.filter(t => {
-    // simple check if it has been added this month
-    return true;
-  }).length;
+  const monthlyConductedCount = (() => {
+    // Count trainings whose `createdAt` falls in the current month/year
+    const now = new Date();
+    const currentMonth = now.getMonth();
+    const currentYear = now.getFullYear();
+    const countThisMonth = trainings.filter(t => {
+      if (!t.createdAt) return false;
+      const d = new Date(t.createdAt);
+      return d.getMonth() === currentMonth && d.getFullYear() === currentYear;
+    }).length;
+    return 48 + countThisMonth;
+  })();
   const totalParticipants = 15234 + trainings.reduce((acc, t) => acc + (t.participants || 0), 0);
 
   const stats = [
