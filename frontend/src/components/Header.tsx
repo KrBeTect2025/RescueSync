@@ -18,6 +18,7 @@ import {
   Menu,
   Shield,
   AlertCircle,
+  Siren,
 } from 'lucide-react';
 import logo from '@/assets/suraksha-saathi-logo.png';
 import { useState } from 'react';
@@ -45,6 +46,7 @@ const Header = () => {
     { path: '/emergency', label: t('emergency'), icon: AlertCircle },
     { path: '/map', label: t('map'), icon: Map },
     { path: '/users', label: t('users'), icon: UserCog },
+    ...(role === 'Admin' ? [{ path: '/alerts', label: language === 'hi' ? 'सतर्कताएं' : 'Alerts', icon: Siren }] : []),
   ];
 
   return (

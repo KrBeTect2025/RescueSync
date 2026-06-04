@@ -192,3 +192,77 @@ app.delete('/api/trainings/:id', (req, res) => {
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
+
+// ALERTS DATABASE - for emergency broadcast
+const ALERTS_DB_FILE = path.join(__dirname, 'alerts.json');
+
+const readAlertsDB = () => {
+  try {
+    const data = fs.readFileSync(ALERTS_DB_FILE, 'utf8');
+    return JSON.parse(data);
+  } catch (error) {
+    console.error('Error reading alerts.json:', error);
+    return { activeAlert: null, history: [] };
+  }
+};
+
+const writeAlertsDB = (data) => {
+  try {
+    fs.writeFileSync(ALERTS_DB_FILE, JSON.stringify(data, null, 2), 'utf8');
+  } catch (error) {
+    console.error('Error writing to alerts.json:', error);
+  }
+};
+
+// GET current active alert
+app.get('/api/alerts/current', (req, res) => {
+  const alerts = readAlertsDB();
+  res.json({ activeAlert: alerts.activeAlert });
+});
+
+// POST new emergency alert (Admin only)
+app.post('/api/alerts/release', (req, res) => {
+  const { message, title, severity } = req.body;
+
+  if (!message || !title) {
+    return res.status(400).json({ error: 'Message and title are required' });
+  }
+
+  const alerts = readAlertsDB();
+  const newAlert = {
+    id: alerts.history.length + 1,
+    title,
+    message,
+    severity: severity || 'Critical',
+    createdAt: new Date().toISOString(),
+    releasedBy: 'admin',
+    active: true,
+  };
+
+  alerts.activeAlert = newAlert;
+  alerts.history.push(newAlert);
+
+  writeAlertsDB(alerts);
+
+  res.status(201).json(newAlert);
+});
+
+// PUT clear active alert (Admin only)
+app.put('/api/alerts/clear', (req, res) => {
+  const alerts = readAlertsDB();
+
+  if (alerts.activeAlert) {
+    alerts.activeAlert.active = false;
+  }
+  alerts.activeAlert = null;
+
+  writeAlertsDB(alerts);
+
+  res.json({ message: 'Alert cleared', activeAlert: null });
+});
+
+// GET alerts history
+app.get('/api/alerts/history', (req, res) => {
+  const alerts = readAlertsDB();
+  res.json(alerts.history);
+});
